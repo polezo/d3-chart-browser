@@ -21,11 +21,39 @@ class ChartHolder extends React.Component {
         this.state = {
           value: '',
           currentCountry: null,
-          suggestions: []
+          currentSuggestion:{
+            "id": "USA",
+            "iso2Code": "US",
+            "name": "United States",
+            "region": {
+              "id": "NAC",
+              "iso2code": "XU",
+              "value": "North America"
+            },
+            "adminregion": {
+              "id": "",
+              "iso2code": "",
+              "value": ""
+            },
+            "incomeLevel": {
+              "id": "HIC",
+              "iso2code": "XD",
+              "value": "High income"
+            },
+            "lendingType": {
+              "id": "LNX",
+              "iso2code": "XX",
+              "value": "Not classified"
+            },
+            "capitalCity": "Washington D.C.",
+            "longitude": "-77.032",
+            "latitude": "38.8895"
+          },
+          suggestions: [],
+          dataTypeToggle:"population"
         }
       }
-
-
+      
     componentDidMount = () => {
         fetch("http://api.worldbank.org/v2/country/usa/indicator/SP.POP.TOTL?format=json")
         .then((res) => res.json())
@@ -35,6 +63,23 @@ class ChartHolder extends React.Component {
     }
 
     dataHelper = () => {
+        let rangeAdjustment
+        let keyAdjustment
+        switch (this.state.dataTypeToggle) {
+            case "population": 
+                rangeAdjustment = 1000000
+                keyAdjustment = "Population in Millions"
+            break;
+            case "gdp":
+                rangeAdjustment = 1000000000
+                keyAdjustment = "GDP in Billions"
+            break;
+            default:
+                rangeAdjustment = 1000000
+                keyAdjustment = "Population in Millions"
+            break;
+        }
+
         let filteredArray = null
         if (this.state.currentCountry) {
             let i = 0
@@ -45,7 +90,7 @@ class ChartHolder extends React.Component {
             }
             })}
          if (filteredArray)  {
-        return filteredArray.map(country => { return {name:country.date, population: country.value}     }
+        return filteredArray.map(country => { return {name:country.date, [keyAdjustment]: (country.value/rangeAdjustment)}     }
             ).reverse()  
         }
         }  
@@ -53,11 +98,24 @@ class ChartHolder extends React.Component {
 
     onSuggestionSelected = (event,{suggestion}) => {
         const country = suggestion.id
-
-        fetch(`http://api.worldbank.org/v2/country/${country}/indicator/SP.POP.TOTL?format=json`)
+        
+        let indicator
+        switch (this.state.dataTypeToggle) {
+            case "population": 
+                indicator = "SP.POP.TOTL"
+            break;
+            case "gdp":
+                indicator = "NY.GDP.MKTP.CD"
+            break;
+            default:
+                indicator = "SP.POP.TOTL"
+            break;
+        }
+        
+        fetch(`http://api.worldbank.org/v2/country/${country}/indicator/${indicator}?format=json`)
         .then((res) => res.json())
         .then((json) => {
-        this.setState({currentCountry:json[1]});
+        this.setState({currentCountry:json[1],currentSuggestion:suggestion});
         });
     }
 
@@ -82,6 +140,12 @@ class ChartHolder extends React.Component {
           return null
       }
 
+      setDataTypeToggle = (e) => {
+        this.setState({dataTypeToggle:e.target.value})
+        setTimeout(()=>this.onSuggestionSelected(e,{suggestion:this.state.currentSuggestion}),10)
+          
+      }
+
     render = () => {
       
         const { currentCountry, suggestions, value } = this.state
@@ -98,6 +162,13 @@ class ChartHolder extends React.Component {
     <main>
         <div className="container">
         <div className="row">
+        <label formFor="dataType">Choose data:</label>
+            <select onChange={this.setDataTypeToggle} id="dataType">
+            <option value="population">Population</option>
+            <option value="gdp">GDP</option>
+            </select>
+        </div>
+        <div className="row">
     <Autosuggest
           suggestions={suggestions}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -109,7 +180,7 @@ class ChartHolder extends React.Component {
         />
         </div>
         <div className="row">
-          <PopulationRechart name={this.nameHelper()} currentCountry={this.dataHelper()}/>  
+          <PopulationRechart dataTypeToggle={this.state.dataTypeToggle} name={this.nameHelper()} currentCountry={this.dataHelper()}/>  
         </div>
         </div>
    </main>

@@ -20,88 +20,91 @@ class ChartHolder extends React.Component {
         super();
         this.state = {
           value: '',
-          currentCountry: null,
-          currentSuggestion:{
-            "id": "USA",
-            "iso2Code": "US",
-            "name": "United States",
-            "region": {
-              "id": "NAC",
-              "iso2code": "XU",
-              "value": "North America"
-            },
-            "adminregion": {
-              "id": "",
-              "iso2code": "",
-              "value": ""
-            },
-            "incomeLevel": {
-              "id": "HIC",
-              "iso2code": "XD",
-              "value": "High income"
-            },
-            "lendingType": {
-              "id": "LNX",
-              "iso2code": "XX",
-              "value": "Not classified"
-            },
-            "capitalCity": "Washington D.C.",
-            "longitude": "-77.032",
-            "latitude": "38.8895"
+          "currentCountry": null,
+          "currentSuggestion":{
+            "id": "BRA",
+            "iso2Code": "Br",
+            "name": "Brazil",
+          },
+          "currentCountry2": null,
+          "currentSuggestion2":{
+            "id": "SYR",
+            "iso2Code": "SY",
+            "name": "Syrian Arab Republic",
           },
           suggestions: [],
-          dataTypeToggle:"population"
+          dataTypeToggle:"population",
+          checked1:true,
+          checked2:false
         }
       }
       
     componentDidMount = () => {
-        fetch("http://api.worldbank.org/v2/country/usa/indicator/SP.POP.TOTL?format=json")
+        fetch("https://api.worldbank.org/v2/country/bra/indicator/SP.POP.TOTL?format=json")
         .then((res) => res.json())
         .then((json) => {
-        this.setState({currentCountry:json[1]});
+        this.setState({"currentCountry":json[1]},this.fetchCountry2);
         });
     }
 
-    dataHelper = () => {
+    fetchCountry2 = () => {
+        fetch("https://api.worldbank.org/v2/country/syr/indicator/SP.POP.TOTL?format=json")
+        .then((res2) => res2.json())
+        .then((json2) => {
+        this.setState({"currentCountry2":json2[1]});
+        });
+    }
+
+    dataHelper = (aCountry = null,aNumber) => {
         let rangeAdjustment
-        let keyAdjustment
+        
         switch (this.state.dataTypeToggle) {
             case "population": 
                 rangeAdjustment = 1000000
-                keyAdjustment = "Population in Millions"
             break;
             case "gdp":
                 rangeAdjustment = 1000000000
-                keyAdjustment = "GDP in Billions"
             break;
             case "emmissions":
                 rangeAdjustment = 1
-                keyAdjustment = "CO2 in Metric Tons Per Capita"
             break;
             default:
                 rangeAdjustment = 1000000
-                keyAdjustment = "Population in Millions"
             break;
         }
 
-        let filteredArray = null
-        if (this.state.currentCountry) {
+        let thisName
+        let filteredArray
+
+        if (aNumber == 1) {
+            thisName = this.state["currentSuggestion2"].name
+        } else {
+            thisName = this.state["currentSuggestion"].name
+        }
+
+        if (aCountry) {
             let i = 0
-              filteredArray = this.state.currentCountry.filter(currentCountry=>{
+              filteredArray = aCountry.filter(currentCountry=>{
             if (currentCountry.value && i < 20) {
                 i++
                 return currentCountry
             }
             })}
          if (filteredArray)  {
-        return filteredArray.map(country => { return {name:country.date, [keyAdjustment]: (country.value/rangeAdjustment)}     }
+        return filteredArray.map(country => { return {name:country.date, [thisName]: ((country.value/rangeAdjustment))}     }
             ).reverse()  
         }
         }  
     
 
-    onSuggestionSelected = (event,{suggestion}) => {
-        const country = suggestion.id
+    onSuggestionSelected = (event,{suggestion},setCountry2=this.state.checked1,doubleSet=false) => {
+        let suggestionToSet
+        let countryToSet
+        suggestionToSet = setCountry2 ? "currentSuggestion" : "currentSuggestion2"
+        countryToSet = setCountry2 ? "currentCountry" : "currentCountry2"
+
+        
+        let country = suggestion.id
         
         let indicator
         switch (this.state.dataTypeToggle) {
@@ -119,10 +122,10 @@ class ChartHolder extends React.Component {
             break;
         }
         
-        fetch(`http://api.worldbank.org/v2/country/${country}/indicator/${indicator}?format=json`)
+        fetch(`https://api.worldbank.org/v2/country/${country}/indicator/${indicator}?format=json`)
         .then((res) => res.json())
         .then((json) => {
-        this.setState({currentCountry:json[1],currentSuggestion:suggestion});
+        this.setState({[countryToSet]:json[1],[suggestionToSet]:suggestion});
         });
     }
 
@@ -140,17 +143,22 @@ class ChartHolder extends React.Component {
         });
       };
 
-      nameHelper = () => {
-          if (this.state.currentCountry) {
-            return `${this.state.currentCountry[0].country.value} ${this.state.currentCountry[0].indicator.value} `
+      chartNameHelper = () => {
+          if (this.state["currentCountry"]) {
+            return `${this.state["currentCountry"][0].indicator.value} `
           }
           return null
       }
 
       setDataTypeToggle = (e) => {
         this.setState({dataTypeToggle:e.target.value})
-        setTimeout(()=>this.onSuggestionSelected(e,{suggestion:this.state.currentSuggestion}),10)
+        setTimeout(()=>this.onSuggestionSelected(e,{suggestion:this.state["currentSuggestion"]},this.state.checked1),10)
+        setTimeout(()=>this.onSuggestionSelected(e,{suggestion:this.state["currentSuggestion2"]},this.state.checked2,true),11)
           
+      }
+
+      updateRadio = (event) => {
+          this.setState({checked1:!this.state.checked1,checked2:!this.state.checked2})
       }
 
     render = () => {
@@ -158,7 +166,7 @@ class ChartHolder extends React.Component {
         const { currentCountry, suggestions, value } = this.state
 
     const inputProps = {
-        placeholder: 'Type a country name',
+        placeholder: `Begin typing a country name`,
         value,
         onChange: this.updateText,
         className: 'shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline mb-4'
@@ -191,11 +199,13 @@ class ChartHolder extends React.Component {
           onSuggestionSelected={this.onSuggestionSelected}
         />
         </div>
-        <div className="col-md-4"></div>
-        
+        <div className="col-md-4 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><span className="country1-update-text"> Update Country 1 </span><br></br>
+        <input checked={this.state.checked2} type='radio' name='country2' value='country2' onChange={this.updateRadio}></input> <span className="country2-update-text">Update Country 2</span></div>
+      
         </div>
+        
         <div className="row">
-          <PopulationRechart dataTypeToggle={this.state.dataTypeToggle} name={this.nameHelper()} currentCountry={this.dataHelper()}/>  
+          <PopulationRechart dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>  
         </div>
         </div>
    </main>

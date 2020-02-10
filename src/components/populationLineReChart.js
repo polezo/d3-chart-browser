@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,Fragment } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
@@ -19,39 +19,66 @@ export default class PopulationRechart extends Component {
         // })}
     }
 
-    lineHelper = () => {
+    lineHelper = (key,axis) => {
         switch (this.props.dataTypeToggle) {
             case "population": 
-            return <Line type="monotone" dataKey="Population in Millions" stroke="#8884d8" activeDot={{ r: 8 }} />
+            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "Black" : "Blue"}  />
+            
             case "gdp":
-            return <Line type="monotone" dataKey="GDP in Billions" stroke="Green" activeDot={{ r: 8 }} />
+            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "Black" : "Blue"} />
+            
             case "emmissions":
-            return <Line type="monotone" dataKey="CO2 in Metric Tons Per Capita" stroke="Red" activeDot={{ r: 8 }} />
+            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "Black" : "Blue"} />
+           
             default:
-            return <Line type="monotone" dataKey="Population in Millions" stroke="#8884d8" activeDot={{ r: 8 }} />
+            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke="Green"  />
+        }
+    }
+
+    numberHelper = () => {
+        switch (this.props.dataTypeToggle) {
+            case "population": 
+            return "in millions"
+            case "gdp":
+            return "in billions"
+            case "emmissions":
+            return ""
+            default:
+            return "in millions"
         }
     }
 
 
   dataAvailableHelper = () => {
-      if (this.props.currentCountry) {
+      if (this.props.currentCountry2) {
+        let newData = this.props.currentCountry.map((mainCountry,index) => {
+            return {...mainCountry,[this.props.countryName2]:this.props.currentCountry2.find(country=>{
+                return mainCountry.name===country.name
+            }) ? 
+            this.props.currentCountry2.find(country=>{
+                return mainCountry.name===country.name
+            })[`${this.props.countryName2}`]: null}}) 
+        
+          
         return (
             <div className="row">
-                <h2>{this.props.name}</h2>
+                <h2>{this.props.name} {this.numberHelper()}</h2>
                 <h4>(ReChart Library)</h4>
-            <ResponsiveContainer width='100%' height={400}>
+            <ResponsiveContainer width='96%' height={400}>
               <LineChart
-                data={this.props.currentCountry}
+                data={newData}
                 margin={{
                   top: 5, right: 20, left: 20, bottom: 5,
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
-                <YAxis />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
                 <Tooltip />
                 <Legend />
-                {this.lineHelper()}
+                {this.lineHelper(this.props.countryName,"left")}
+                {this.lineHelper(this.props.countryName2,"right")}
                 
                 
               </LineChart>

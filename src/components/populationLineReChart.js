@@ -62,7 +62,7 @@ export default class PopulationRechart extends Component {
           
         return (
             <div className="row">
-                <h2>{this.props.name} {this.numberHelper()}</h2>
+                <h2>{this.props.name} {`${this.numberHelper()} || ${this.props.countryName}, `}<span className="country2-update-text">{this.props.countryName2}</span></h2>
                 <h4>(ReChart Library)</h4>
             <ResponsiveContainer width='96%' height={400}>
               <LineChart

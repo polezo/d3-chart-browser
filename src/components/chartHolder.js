@@ -208,6 +208,7 @@ class ChartHolder extends React.Component {
           <PopulationRechart dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>  
         </div>
         </div>
+        <div class="row">All data sourced from the <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview">World Bank API</a>. Depending on data availability, some charts may be partial or non-existent.</div>
    </main>
     )
     }

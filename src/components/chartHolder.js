@@ -74,6 +74,10 @@ class ChartHolder extends React.Component {
                 rangeAdjustment = 1000000000
                 keyAdjustment = "GDP in Billions"
             break;
+            case "emmissions":
+                rangeAdjustment = 1
+                keyAdjustment = "CO2 in Metric Tons Per Capita"
+            break;
             default:
                 rangeAdjustment = 1000000
                 keyAdjustment = "Population in Millions"
@@ -106,6 +110,9 @@ class ChartHolder extends React.Component {
             break;
             case "gdp":
                 indicator = "NY.GDP.MKTP.CD"
+            break;
+            case "emmissions":
+                indicator = "EN.ATM.CO2E.PC"
             break;
             default:
                 indicator = "SP.POP.TOTL"
@@ -161,14 +168,19 @@ class ChartHolder extends React.Component {
         return (
     <main>
         <div className="container">
-        <div className="row">
-        <label formFor="dataType">Choose data:</label>
+        <div className="row push-down">
+        
+        </div>
+        <div className="row push-up">
+        
+        <div className="col-md-4 data-dropdown">
+            <label formFor="dataType">Choose data:</label>
             <select onChange={this.setDataTypeToggle} id="dataType">
             <option value="population">Population</option>
             <option value="gdp">GDP</option>
-            </select>
-        </div>
-        <div className="row">
+            <option value="emmissions">Emmissions</option>
+            </select></div>
+        <div className="col-md-4">
     <Autosuggest
           suggestions={suggestions}
           onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -178,6 +190,9 @@ class ChartHolder extends React.Component {
           inputProps={inputProps}
           onSuggestionSelected={this.onSuggestionSelected}
         />
+        </div>
+        <div className="col-md-4"></div>
+        
         </div>
         <div className="row">
           <PopulationRechart dataTypeToggle={this.state.dataTypeToggle} name={this.nameHelper()} currentCountry={this.dataHelper()}/>  

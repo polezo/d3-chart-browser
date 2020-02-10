@@ -12,7 +12,8 @@
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.1",
     "recharts": "^2.0.0-beta.1",
-    "throttle-debounce": "^2.1.0"
+    "throttle-debounce": "^2.1.0",
+    "homepage": "d3-charts/"
   },
   "scripts": {
     "start": "react-scripts start",

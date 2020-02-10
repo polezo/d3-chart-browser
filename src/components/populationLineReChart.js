@@ -25,6 +25,8 @@ export default class PopulationRechart extends Component {
             return <Line type="monotone" dataKey="Population in Millions" stroke="#8884d8" activeDot={{ r: 8 }} />
             case "gdp":
             return <Line type="monotone" dataKey="GDP in Billions" stroke="Green" activeDot={{ r: 8 }} />
+            case "emmissions":
+            return <Line type="monotone" dataKey="CO2 in Metric Tons Per Capita" stroke="Red" activeDot={{ r: 8 }} />
             default:
             return <Line type="monotone" dataKey="Population in Millions" stroke="#8884d8" activeDot={{ r: 8 }} />
         }
@@ -37,7 +39,7 @@ export default class PopulationRechart extends Component {
             <div className="row">
                 <h2>{this.props.name}</h2>
                 <h4>(ReChart Library)</h4>
-            <ResponsiveContainer width='100%' height={300}>
+            <ResponsiveContainer width='100%' height={400}>
               <LineChart
                 data={this.props.currentCountry}
                 margin={{

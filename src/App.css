@@ -7,6 +7,18 @@
   pointer-events: none;
 }
 
+.data-dropdown {
+  padding-top:5px;
+}
+
+.push-down {
+  margin-top:50px;
+}
+
+.push-up {
+  margin-bottom:50px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

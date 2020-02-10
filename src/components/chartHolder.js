@@ -28,19 +28,20 @@ class ChartHolder extends React.Component {
           },
           "currentCountry2": null,
           "currentSuggestion2":{
-            "id": "SYR",
-            "iso2Code": "SY",
-            "name": "Syrian Arab Republic",
+            "id": "CHN",
+            "iso2Code": "CN",
+            "name": "China",
           },
           suggestions: [],
-          dataTypeToggle:"population",
+          dataTypeToggle:"gdp",
+          chartTypeToggle:"bar",
           checked1:true,
           checked2:false
         }
       }
       
     componentDidMount = () => {
-        fetch("https://api.worldbank.org/v2/country/bra/indicator/SP.POP.TOTL?format=json")
+        fetch("https://api.worldbank.org/v2/country/bra/indicator/NY.GDP.PCAP.CD?format=json")
         .then((res) => res.json())
         .then((json) => {
         this.setState({"currentCountry":json[1]},this.fetchCountry2);
@@ -48,7 +49,7 @@ class ChartHolder extends React.Component {
     }
 
     fetchCountry2 = () => {
-        fetch("https://api.worldbank.org/v2/country/syr/indicator/SP.POP.TOTL?format=json")
+        fetch("https://api.worldbank.org/v2/country/chn/indicator/NY.GDP.PCAP.CD?format=json")
         .then((res2) => res2.json())
         .then((json2) => {
         this.setState({"currentCountry2":json2[1]});
@@ -63,7 +64,7 @@ class ChartHolder extends React.Component {
                 rangeAdjustment = 1000000
             break;
             case "gdp":
-                rangeAdjustment = 1000000000
+                rangeAdjustment = 1
             break;
             case "emmissions":
                 rangeAdjustment = 1
@@ -112,7 +113,7 @@ class ChartHolder extends React.Component {
                 indicator = "SP.POP.TOTL"
             break;
             case "gdp":
-                indicator = "NY.GDP.MKTP.CD"
+                indicator = "NY.GDP.PCAP.CD"
             break;
             case "emmissions":
                 indicator = "EN.ATM.CO2E.PC"
@@ -157,6 +158,10 @@ class ChartHolder extends React.Component {
           
       }
 
+      setChartTypeToggle = (e) => {
+        this.setState({chartTypeToggle:e.target.value})
+      }
+
       updateRadio = (event) => {
           this.setState({checked1:!this.state.checked1,checked2:!this.state.checked2})
       }
@@ -176,17 +181,18 @@ class ChartHolder extends React.Component {
         return (
     <main>
         <div className="container">
+            <div className="row "><h1 className="push-down2">D3 React Library Browser</h1></div>
         <div className="row push-down">
         
         </div>
         <div className="row push-up">
         
         <div className="col-md-4 data-dropdown">
-            <label formFor="dataType">Choose data:</label>
+            <label name="dataType">Select Data:</label>
             <select onChange={this.setDataTypeToggle} id="dataType">
+            <option value="gdp">GDP Per Capita</option>
+            <option value="emmissions">Emmissions Per Capita</option>
             <option value="population">Population</option>
-            <option value="gdp">GDP</option>
-            <option value="emmissions">Emmissions</option>
             </select></div>
         <div className="col-md-4">
     <Autosuggest
@@ -199,16 +205,25 @@ class ChartHolder extends React.Component {
           onSuggestionSelected={this.onSuggestionSelected}
         />
         </div>
-        <div className="col-md-4 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><span className="country1-update-text"> Update Country 1 </span><br></br>
-        <input checked={this.state.checked2} type='radio' name='country2' value='country2' onChange={this.updateRadio}></input> <span className="country2-update-text">Update Country 2</span></div>
+        <div className="col-md-2 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><span className="country1-update-text"> Change Country 1 </span><br></br>
+        <input checked={this.state.checked2} type='radio' name='country2' value='country2' onChange={this.updateRadio}></input> <span className="country2-update-text">Change Country 2</span></div>
+        <div className="col-md-2 chart-type"> 
+        <label name="chartType">Select Chart Type:</label>
+            <select onChange={this.setChartTypeToggle} id="chartType">
+            <option value="bar">Bar Chart (Single Axis)</option>
+            <option value="line">Line Chart (Biaxial)</option>
+            </select>
+        </div>
+        
+        
       
         </div>
         
         <div className="row">
-          <PopulationRechart dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>  
+          <PopulationRechart chartTypeToggle={this.state.chartTypeToggle} dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>  
         </div>
         </div>
-        <div class="row">All data sourced from the <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview">World Bank API</a>. Depending on data availability, some charts may be partial or non-existent.</div>
+        <div className="row">All data sourced from the <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview">World Bank API</a>. Depending on data availability, some charts may be partial or non-existent.</div>
    </main>
     )
     }

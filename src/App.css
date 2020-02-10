@@ -12,19 +12,27 @@
 }
 
 .push-down {
-  margin-top:50px;
+  margin-top:25px;
+}
+
+.push-down2 {
+  padding-top:50px;
+}
+
+.chart-type {
+  bottom:9px;
 }
 
 .country-radio{
 bottom:5px;
 }
 
-.country2-update-text {
-  color:Blue;
+.country1-update-text {
+  color:#8884d8;
 }
 
-.country1-update-text {
-  color:Black;
+.country2-update-text {
+  color:#82ca9d;
 }
 
 .push-up {

@@ -1,7 +1,6 @@
 import React, { Component,Fragment } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
-} from 'recharts';
+  LineChart, BarChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Bar} from 'recharts';
 
 
 export default class PopulationRechart extends Component {
@@ -20,18 +19,37 @@ export default class PopulationRechart extends Component {
     }
 
     lineHelper = (key,axis) => {
-        switch (this.props.dataTypeToggle) {
-            case "population": 
-            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "Black" : "Blue"}  />
+        switch (this.props.chartTypeToggle) {
+            case "line":
+        
+                switch (this.props.dataTypeToggle) {
+                case "population": 
+                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "#8884d8" : "#82ca9d"}  />
+                
+                case "gdp":
+                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "#8884d8" : "#82ca9d"} />
+                
+                case "emmissions":
+                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "#8884d8" : "#82ca9d"} />
             
-            case "gdp":
-            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "Black" : "Blue"} />
-            
-            case "emmissions":
-            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "Black" : "Blue"} />
-           
-            default:
-            return <Line yAxisId={axis} type="monotone" dataKey={key} stroke="Green"  />
+                default:
+                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke="Green"  />
+                }
+            case "bar":
+        
+                switch (this.props.dataTypeToggle) {
+                case "population": 
+                return <Bar  type="monotone" dataKey={key} fill={axis=="left" ? "#8884d8" : "#82ca9d"}  />
+                        
+                case "gdp":
+                return <Bar type="monotone" dataKey={key} fill={axis=="left" ? "#8884d8" : "#82ca9d"} />
+                        
+                case "emmissions":
+                return <Bar type="monotone" dataKey={key} fill={axis=="left" ? "#8884d8" : "#82ca9d"} />
+                    
+                default:
+                return <Bar type="monotone" dataKey={key} fill="Green"  />
+                    }
         }
     }
 
@@ -40,7 +58,7 @@ export default class PopulationRechart extends Component {
             case "population": 
             return "in millions"
             case "gdp":
-            return "in billions"
+            return ""
             case "emmissions":
             return ""
             default:
@@ -62,10 +80,10 @@ export default class PopulationRechart extends Component {
           
         return (
             <div className="row">
-                <h2>{this.props.name} {`${this.numberHelper()} || ${this.props.countryName}, `}<span className="country2-update-text">{this.props.countryName2}</span></h2>
+                <h2>{this.props.name} {`${this.numberHelper()} || `}<span className="country1-update-text">{this.props.countryName}</span>, <span className="country2-update-text">{this.props.countryName2}</span></h2>
                 <h4>(ReChart Library)</h4>
-            <ResponsiveContainer width='96%' height={400}>
-              <LineChart
+            <ResponsiveContainer width='98%' height={400}>
+              {this.props.chartTypeToggle === "line" ? <LineChart
                 data={newData}
                 margin={{
                   top: 5, right: 20, left: 20, bottom: 5,
@@ -79,9 +97,21 @@ export default class PopulationRechart extends Component {
                 <Legend />
                 {this.lineHelper(this.props.countryName,"left")}
                 {this.lineHelper(this.props.countryName2,"right")}
+              </LineChart> : <BarChart
+                data={newData}
+                margin={{
+                  top: 5, right: 20, left: 20, bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis  />
                 
-                
-              </LineChart>
+                <Tooltip />
+                <Legend />
+                {this.lineHelper(this.props.countryName,"left")}
+                {this.lineHelper(this.props.countryName2,"right")}
+              </BarChart>}
               </ResponsiveContainer>
               </div>
         )

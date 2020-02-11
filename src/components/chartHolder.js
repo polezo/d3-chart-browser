@@ -66,14 +66,8 @@ class ChartHolder extends React.Component {
             case "population": 
                 rangeAdjustment = 1000000
             break;
-            case "gdp":
-                rangeAdjustment = 1
-            break;
-            case "emmissions":
-                rangeAdjustment = 1
-            break;
             default:
-                rangeAdjustment = 1000000
+                rangeAdjustment = 1
             break;
         }
 
@@ -120,6 +114,12 @@ class ChartHolder extends React.Component {
             break;
             case "emmissions":
                 indicator = "EN.ATM.CO2E.PC"
+            break;
+            case "unemployment":
+                indicator = "SL.UEM.TOTL.ZS"
+            break;
+            case "life expectancy":
+                indicator = "SP.DYN.LE00.IN"
             break;
             default:
                 indicator = "SP.POP.TOTL"
@@ -199,7 +199,7 @@ class ChartHolder extends React.Component {
         return (
     <main>
         <div className="container">
-            <div className="row "><h1 className="push-down2">D3 React Library Browser</h1></div>
+            <div className="row "><h1 className="push-down2">React D3 Library Playground</h1></div>
         <div className="row push-down">
         
         </div>
@@ -211,6 +211,8 @@ class ChartHolder extends React.Component {
             <option value="gdp">GDP Per Capita</option>
             <option value="emmissions">Emmissions Per Capita</option>
             <option value="population">Population</option>
+            <option value="unemployment">Unemployment</option>
+            <option value="life expectancy">Life Expectancy</option>
             </select></div>
 
             <div className="col-md-2 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><b className="country1-update-text"> Update Country or Region 1 </b><br></br>
@@ -238,7 +240,7 @@ class ChartHolder extends React.Component {
         <label name="chartType">Select Chart Type:</label>
             <select onChange={this.setChartTypeToggle} id="chartType">
             <option value="bar">Bar Chart (Single Axis)</option>
-            <option value="line">Line Chart (Biaxial)</option>
+            <option value="line">Line Chart {this.state.libraryToggle==="rechart" ? '(Biaxial)' : '(Single Axis}'}</option>
             </select>
         </div>
         

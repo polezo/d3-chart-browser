@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component,Fragment } from "react";
 
-import { VictoryBar, VictoryChart, VictoryTheme, VictoryContainer, VictoryGroup, VictoryLegend} from "victory";
+import { VictoryBar, VictoryChart, VictoryTheme, VictoryContainer, VictoryGroup, VictoryLegend,VictoryLine} from "victory";
 
 class VictoryChartz extends Component {
   
@@ -12,8 +12,10 @@ class VictoryChartz extends Component {
         return ""
         case "emmissions":
         return ""
+        case "unemployment":
+        return ""
         default:
-        return "in millions"
+        return ""
     }
 }
 
@@ -37,36 +39,42 @@ class VictoryChartz extends Component {
         
         <div style={{ display: "flex",}}>
     <VictoryChart height={400} width={1200} style={{ parent: { maxWidth: "100%" } }}>
-
-          <VictoryLegend x={125} y={50}
+   
+        {this.props.chartTypeToggle === "line" ?
+         <VictoryGroup offset={20} style={{ data: { width: 20 } }}>
+         <VictoryLine
+         style={{ data: { stroke: "#8884d8" } }}
+         data={newData}/> 
+         <VictoryLine
+         style={{ data: { stroke: "#82ca9d" } }}
+         data={newData2}
+       /> 
+       </VictoryGroup> : <VictoryGroup offset={20} style={{ data: { width: 20 } }}>
+       <VictoryBar
+       style={{ data: { fill: "#8884d8" } }}
+       data={newData}/> 
+       <VictoryBar
+       style={{ data: { fill: "#82ca9d" } }}
+       data={newData2}
+     /> 
+     
+      </VictoryGroup>}
+      <VictoryLegend x={70} y={0}
           title="Legend"
           centerTitle
           orientation="horizontal"
           gutter={20}
-          style={{ border: { stroke: "black" }, title: {fontSize: 20 } }}
+          style={{ border: { stroke: "black", fill:"white" }, title: {fontSize: 20 } }}
           data={[
       { name: `${this.props.countryName}`, symbol: { fill: "#8884d8" } },
       { name: `${this.props.countryName2}`, symbol: { fill: "#82ca9d" } },
       
-    ]}
-  />
-        
-         <VictoryGroup offset={20} style={{ data: { width: 20 } }}>
-        <VictoryBar
-          
-          style={{ data: { fill: "#8884d8" } }}
-          data={newData}
-        />
-    
-    <VictoryBar
-          
-          style={{ data: { fill: "#82ca9d" } }}
-          data={newData2}
-        />
-    
-    </VictoryGroup>
+         ]}
+          />
       </VictoryChart>
+     
       </div>
+     
       </div>
       )
      }  

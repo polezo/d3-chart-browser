@@ -9,35 +9,11 @@ export default class PopulationRechart extends Component {
     lineHelper = (key,axis) => {
         switch (this.props.chartTypeToggle) {
             case "line":
-        
-                switch (this.props.dataTypeToggle) {
-                case "population": 
-                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "#8884d8" : "#82ca9d"}  />
-                
-                case "gdp":
-                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "#8884d8" : "#82ca9d"} />
-                
-                case "emmissions":
-                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left" ? "#8884d8" : "#82ca9d"} />
-            
-                default:
-                return <Line yAxisId={axis} type="monotone" dataKey={key} stroke="Green"  />
-                }
+                    return <Line yAxisId={axis} type="monotone" dataKey={key} stroke={axis=="left"? "#8884d8" : "#82ca9d"} />
+
             case "bar":
-        
-                switch (this.props.dataTypeToggle) {
-                case "population": 
-                return <Bar  type="monotone" dataKey={key} fill={axis=="left" ? "#8884d8" : "#82ca9d"}  />
-                        
-                case "gdp":
-                return <Bar type="monotone" dataKey={key} fill={axis=="left" ? "#8884d8" : "#82ca9d"} />
-                        
-                case "emmissions":
                 return <Bar type="monotone" dataKey={key} fill={axis=="left" ? "#8884d8" : "#82ca9d"} />
                     
-                default:
-                return <Bar type="monotone" dataKey={key} fill="Green"  />
-                    }
         }
     }
 
@@ -45,12 +21,8 @@ export default class PopulationRechart extends Component {
         switch (this.props.dataTypeToggle) {
             case "population": 
             return "in millions"
-            case "gdp":
-            return ""
-            case "emmissions":
-            return ""
             default:
-            return "in millions"
+            return ""
         }
     }
 

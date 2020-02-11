@@ -6,18 +6,6 @@ import {
 export default class PopulationRechart extends Component {
   
 
-    componentDidMount = () => {
-        
-        // if (this.state.currentCountry) {
-        // let countryArray = this.state.currentCountry.map(currentCountry=>{
-        //     if (currentCountry.value) {
-        //     return { name:currentCountry.date, population: currentCountry.value }
-        //     }
-        //     console.log(countryArray)
-        //     this.setState({data:countryArray})
-        // })}
-    }
-
     lineHelper = (key,axis) => {
         switch (this.props.chartTypeToggle) {
             case "line":
@@ -80,7 +68,7 @@ export default class PopulationRechart extends Component {
           
         return (
             <div className="row">
-                <h2>{this.props.name} {`${this.numberHelper()} || `}<span className="country1-update-text">{this.props.countryName}</span>, <span className="country2-update-text">{this.props.countryName2}</span></h2>
+                <h2>{this.props.name} {`${this.numberHelper()} || `}<b className="country1-update-text">{this.props.countryName}</b>, <b className="country2-update-text">{this.props.countryName2}</b></h2>
                 <h4>(ReChart Library)</h4>
             <ResponsiveContainer width='98%' height={400}>
               {this.props.chartTypeToggle === "line" ? <LineChart
@@ -118,7 +106,6 @@ export default class PopulationRechart extends Component {
       }
       return <h2>Sorry, no data available for this view</h2>
   }
-
 
   render() {
     return this.dataAvailableHelper()

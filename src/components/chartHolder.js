@@ -2,6 +2,7 @@ import React from 'react';
 import countryCodes from './countryCodeJson.js'
 import Autosuggest from 'react-autosuggest'
 import PopulationRechart from './populationLineReChart.js'
+import Victory from './victory.js'
 import '../App.css';
 
 
@@ -35,8 +36,10 @@ class ChartHolder extends React.Component {
           suggestions: [],
           dataTypeToggle:"gdp",
           chartTypeToggle:"bar",
+          libraryToggle:"rechart",
           checked1:true,
           checked2:false
+          
         }
       }
       
@@ -158,12 +161,27 @@ class ChartHolder extends React.Component {
           
       }
 
+      setLibraryToggle = (e) => {
+        this.setState({libraryToggle:e.target.value})
+      }
+
       setChartTypeToggle = (e) => {
         this.setState({chartTypeToggle:e.target.value})
       }
 
-      updateRadio = (event) => {
+      updateRadio = () => {
           this.setState({checked1:!this.state.checked1,checked2:!this.state.checked2})
+      }
+
+      chartLibraryHelper = () => {
+          switch (this.state.libraryToggle) {
+              case "rechart":
+              return  <PopulationRechart chartTypeToggle={this.state.chartTypeToggle} dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>  
+              case "react-chartjs":
+              return <Victory chartTypeToggle={this.state.chartTypeToggle} dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>
+              default:
+                return <PopulationRechart chartTypeToggle={this.state.chartTypeToggle} dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>  
+          }
       }
 
     render = () => {
@@ -171,7 +189,7 @@ class ChartHolder extends React.Component {
         const { currentCountry, suggestions, value } = this.state
 
     const inputProps = {
-        placeholder: `Begin typing a country name`,
+        placeholder: `Begin by typing a country name`,
         value,
         onChange: this.updateText,
         className: 'shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline mb-4'
@@ -187,13 +205,17 @@ class ChartHolder extends React.Component {
         </div>
         <div className="row push-up">
         
-        <div className="col-md-4 data-dropdown">
+        <div className="col-md-2 chart-type">
             <label name="dataType">Select Data:</label>
             <select onChange={this.setDataTypeToggle} id="dataType">
             <option value="gdp">GDP Per Capita</option>
             <option value="emmissions">Emmissions Per Capita</option>
             <option value="population">Population</option>
             </select></div>
+
+            <div className="col-md-2 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><b className="country1-update-text"> Update Country or Region 1 </b><br></br>
+        <input checked={this.state.checked2} type='radio' name='country2' value='country2' onChange={this.updateRadio}></input> <b className="country2-update-text">Update Country or Region 2</b></div>
+
         <div className="col-md-4">
     <Autosuggest
           suggestions={suggestions}
@@ -205,8 +227,13 @@ class ChartHolder extends React.Component {
           onSuggestionSelected={this.onSuggestionSelected}
         />
         </div>
-        <div className="col-md-2 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><span className="country1-update-text"> Change Country 1 </span><br></br>
-        <input checked={this.state.checked2} type='radio' name='country2' value='country2' onChange={this.updateRadio}></input> <span className="country2-update-text">Change Country 2</span></div>
+        <div className="col-md-2 chart-type"> 
+        <label name="chartType">Select Library:</label>
+            <select onChange={this.setLibraryToggle} id="chartType">
+            <option value="rechart">ReChart</option>
+            <option value="react-chartjs">Victory</option>
+            </select>
+        </div>
         <div className="col-md-2 chart-type"> 
         <label name="chartType">Select Chart Type:</label>
             <select onChange={this.setChartTypeToggle} id="chartType">
@@ -220,10 +247,11 @@ class ChartHolder extends React.Component {
         </div>
         
         <div className="row">
-          <PopulationRechart chartTypeToggle={this.state.chartTypeToggle} dataTypeToggle={this.state.dataTypeToggle} name={this.chartNameHelper()} currentCountry={this.dataHelper(this.state["currentCountry"],0)} currentCountry2={this.dataHelper(this.state["currentCountry2"],1)} countryName={this.state.currentSuggestion.name} countryName2={this.state.currentSuggestion2.name}/>  
+        {this.chartLibraryHelper()}
         </div>
+        <div className="row"> <div className="col-md-2"></div> <div className="col-md-8">All data sourced from the <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview">World Bank API</a>. Depending on data availability, some charts may be partial or non-existent. By default, the chart displays the 20 most recent years of data for Country 1, and Country 2 is aligned to that.</div><div className="col-md-2"></div></div>
         </div>
-        <div className="row">All data sourced from the <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview">World Bank API</a>. Depending on data availability, some charts may be partial or non-existent.</div>
+      
    </main>
     )
     }

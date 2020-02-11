@@ -24,15 +24,17 @@
 }
 
 .country-radio{
-bottom:5px;
+bottom:6px;
 }
 
 .country1-update-text {
   color:#8884d8;
+  font-size:.8em;
 }
 
 .country2-update-text {
   color:#82ca9d;
+  font-size:.8em;
 }
 
 .push-up {

@@ -211,12 +211,12 @@ class ChartHolder extends React.Component {
             <option value="gdp">GDP Per Capita</option>
             <option value="emmissions">Emmissions Per Capita</option>
             <option value="population">Population</option>
-            <option value="unemployment">Unemployment</option>
+            <option value="unemployment">Unemployment Rate</option>
             <option value="life expectancy">Life Expectancy</option>
             </select></div>
 
-            <div className="col-md-2 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><b className="country1-update-text"> Update Country or Region 1 </b><br></br>
-        <input checked={this.state.checked2} type='radio' name='country2' value='country2' onChange={this.updateRadio}></input> <b className="country2-update-text">Update Country or Region 2</b></div>
+            <div className="col-md-2 country-radio">  <input checked={this.state.checked1} type='radio' name='country1' value='country1' onChange={this.updateRadio}></input><b className="country1-update-text"> Change Country or Region 1 </b><br></br>
+        <input checked={this.state.checked2} type='radio' name='country2' value='country2' onChange={this.updateRadio}></input> <b className="country2-update-text">Change Country or Region 2</b></div>
 
         <div className="col-md-4">
     <Autosuggest
@@ -251,7 +251,7 @@ class ChartHolder extends React.Component {
         <div className="row">
         {this.chartLibraryHelper()}
         </div>
-        <div className="row"> <div className="col-md-2"></div> <div className="col-md-8">All data sourced from the <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview">World Bank API</a>. Depending on data availability, some charts may be partial or non-existent. By default, the chart displays the 20 most recent years of data for Country 1, and Country 2 is aligned to that.</div><div className="col-md-2"></div></div>
+        <div className="row"> <div className="col-md-2"></div> <div className="col-md-8">All data sourced from the <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889386-developer-information-overview">World Bank API</a>. Depending on data availability, some charts may be partial or non-existent. By default, the chart displays the 20 most recent years of data for Country 1, and Country 2 is aligned to those years.</div><div className="col-md-2"></div></div>
         </div>
       
    </main>
